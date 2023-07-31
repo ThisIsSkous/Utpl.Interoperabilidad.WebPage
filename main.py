@@ -4,8 +4,13 @@ import requests
 
 app = Flask(__name__)
 
+# Lista de personas
+personaList = [{"nombre": "Juan", "apellido": "Perez", "edad": 25},
+            {"nombre": "Ana", "apellido": "Gomez", "edad": 30},
+            {"nombre": "Carlos", "apellido": "Lopez", "edad": 45}]
+
 #Declarar el API KEY generado de wso2 api manager desde la aplicacion
-API_KEY = 'eyJ4NXQiOiJPREUzWTJaaE1UQmpNRE00WlRCbU1qQXlZemxpWVRJMllqUmhZVFpsT0dJeVptVXhOV0UzWVE9PSIsImtpZCI6ImdhdGV3YXlfY2VydGlmaWNhdGVfYWxpYXMiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhcHBsaWNhdGlvbiI6eyJvd25lciI6ImFkbWluIiwidGllclF1b3RhVHlwZSI6bnVsbCwidGllciI6IlVubGltaXRlZCIsIm5hbWUiOiJhcHBfZmVsaXBlIiwiaWQiOjIsInV1aWQiOiI3ZjZkOWIwNi0yYTljLTQ5NDAtOGFmNi04ZTNhMzc2NWNjMmQifSwiaXNzIjoiaHR0cHM6XC9cL3V0cGx3c28yLnRrOjQ0M1wvYXBpbVwvb2F1dGgyXC90b2tlbiIsInRpZXJJbmZvIjp7IlVubGltaXRlZCI6eyJ0aWVyUXVvdGFUeXBlIjoicmVxdWVzdENvdW50IiwiZ3JhcGhRTE1heENvbXBsZXhpdHkiOjAsImdyYXBoUUxNYXhEZXB0aCI6MCwic3RvcE9uUXVvdGFSZWFjaCI6dHJ1ZSwic3Bpa2VBcnJlc3RMaW1pdCI6MCwic3Bpa2VBcnJlc3RVbml0IjpudWxsfX0sImtleXR5cGUiOiJQUk9EVUNUSU9OIiwicGVybWl0dGVkUmVmZXJlciI6IiIsInN1YnNjcmliZWRBUElzIjpbeyJzdWJzY3JpYmVyVGVuYW50RG9tYWluIjoiY2FyYm9uLnN1cGVyIiwibmFtZSI6IlV0cGxQZXJzb25hcyIsImNvbnRleHQiOiJcL2FwaXBlcnNvbmFcLzEuMCIsInB1Ymxpc2hlciI6ImFkbWluIiwidmVyc2lvbiI6IjEuMCIsInN1YnNjcmlwdGlvblRpZXIiOiJVbmxpbWl0ZWQifSx7InN1YnNjcmliZXJUZW5hbnREb21haW4iOiJjYXJib24uc3VwZXIiLCJuYW1lIjoiVXRwbFBlcnNvbmFzIiwiY29udGV4dCI6IlwvYXBpcGVyc29uYVwvMi4wIiwicHVibGlzaGVyIjoiYWRtaW4iLCJ2ZXJzaW9uIjoiMi4wIiwic3Vic2NyaXB0aW9uVGllciI6IlVubGltaXRlZCJ9LHsic3Vic2NyaWJlclRlbmFudERvbWFpbiI6ImNhcmJvbi5zdXBlciIsIm5hbWUiOiJVdHBsUGVyc29uYXMiLCJjb250ZXh0IjoiXC9hcGlwZXJzb25hXC8zLjAiLCJwdWJsaXNoZXIiOiJhZG1pbiIsInZlcnNpb24iOiIzLjAiLCJzdWJzY3JpcHRpb25UaWVyIjoiVW5saW1pdGVkIn1dLCJ0b2tlbl90eXBlIjoiYXBpS2V5IiwicGVybWl0dGVkSVAiOiIiLCJpYXQiOjE2ODk5NTU1MzQsImp0aSI6ImIzYTJkMjc1LTZhMTEtNDc4My1iMTRhLTMwNGU2ZGJhN2U5MCJ9.cNJlok5z2hJjoHlFcCVqR8UWJkEg_hlLjvmvIEGWiCMUWMAvQ7iWaB4uP5dLQ5vfDzFXp4hirbJmkI5eA8LtU_ebfVLCsDZ_9UnpK6-mS2Wlrvw0HyA9YU7bv-C2PvqWuG9IFB4_EqNRzmf2XuTD8QODEvjHkeei9lzwfaglHUURSrjkzF6Yq1VWgeJawbaVw-iljwBRY1JXvlDwpQAWEMKU_-WJZgfJwW5Aw4OQmozI0rQhAhuI6oaaek-1VaeNwdHSlzaBOU4eZQuueAzzbAMdWAHKPByuci1Ca4n6dfDIhQcGyALB_yIIUy_puDYrZZA4x70tFUpjuo_InvTaEQ=='
+API_KEY = 'eyJ4NXQiOiJPREUzWTJaaE1UQmpNRE00WlRCbU1qQXlZemxpWVRJMllqUmhZVFpsT0dJeVptVXhOV0UzWVE9PSIsImtpZCI6ImdhdGV3YXlfY2VydGlmaWNhdGVfYWxpYXMiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhcHBsaWNhdGlvbiI6eyJvd25lciI6ImFkbWluIiwidGllclF1b3RhVHlwZSI6bnVsbCwidGllciI6IlVubGltaXRlZCIsIm5hbWUiOiJhcHAtYWxleCIsImlkIjo1LCJ1dWlkIjoiYzViZGFiZjAtNzM5ZS00Zjg4LTg1Y2ItNTg4NGJhMzVjNTFiIn0sImlzcyI6Imh0dHBzOlwvXC91dHBsd3NvMi50azo0NDNcL2FwaW1cL29hdXRoMlwvdG9rZW4iLCJ0aWVySW5mbyI6eyJVbmxpbWl0ZWQiOnsidGllclF1b3RhVHlwZSI6InJlcXVlc3RDb3VudCIsImdyYXBoUUxNYXhDb21wbGV4aXR5IjowLCJncmFwaFFMTWF4RGVwdGgiOjAsInN0b3BPblF1b3RhUmVhY2giOnRydWUsInNwaWtlQXJyZXN0TGltaXQiOjAsInNwaWtlQXJyZXN0VW5pdCI6bnVsbH19LCJrZXl0eXBlIjoiU0FOREJPWCIsInN1YnNjcmliZWRBUElzIjpbeyJzdWJzY3JpYmVyVGVuYW50RG9tYWluIjoiY2FyYm9uLnN1cGVyIiwibmFtZSI6IlV0cGxDbGllbnRlIiwiY29udGV4dCI6IlwvQXBpQ2xpZW50ZVwvMS4wIiwicHVibGlzaGVyIjoiYWRtaW4iLCJ2ZXJzaW9uIjoiMS4wIiwic3Vic2NyaXB0aW9uVGllciI6IlVubGltaXRlZCJ9LHsic3Vic2NyaWJlclRlbmFudERvbWFpbiI6ImNhcmJvbi5zdXBlciIsIm5hbWUiOiJVdHBsQ2xpZW50ZSIsImNvbnRleHQiOiJcL0FwaUNsaWVudGVcLzIuMCIsInB1Ymxpc2hlciI6ImFkbWluIiwidmVyc2lvbiI6IjIuMCIsInN1YnNjcmlwdGlvblRpZXIiOiJVbmxpbWl0ZWQifSx7InN1YnNjcmliZXJUZW5hbnREb21haW4iOiJjYXJib24uc3VwZXIiLCJuYW1lIjoiVXRwbFBlcnNvbmFzIiwiY29udGV4dCI6IlwvYXBpcGVyc29uYVwvMy4wIiwicHVibGlzaGVyIjoiYWRtaW4iLCJ2ZXJzaW9uIjoiMy4wIiwic3Vic2NyaXB0aW9uVGllciI6IlVubGltaXRlZCJ9XSwidG9rZW5fdHlwZSI6ImFwaUtleSIsImlhdCI6MTY5MDMzNzg0NywianRpIjoiNzI4MTc5NjYtNzhmMy00ZTNlLWE2NzAtMGI0MDkyYWEwNmZhIn0=.r_KtQR_bsPAgBY1bZG-xhFtkAITJfY7N2QNv3Fk-pvJjkd4eBdgKF5OtAwWRw7O_IirH6W-99yhll55-Bs3YJnigg7PvRojxFwk3UXGOyq7amqhSU1fFlJESmsS5s5cCJVv2F31nfVsMK6wUM9dwnj5byEyRFjhU0OSifOp487RCfSA37DU9gJTHRJubrqHSPBVix6LibY0i3kBU9ncT1duDl_Sf-BFUrrX7981sttLyBURpHHToPqSFdNS0-FnzM2ve8rh8TvtFoGWzSVvTLnbZmr_H1AsjjhZnaw-hA-637Ji5ldOxga37rsFARI7MsZDPE8Haodzf1y1c9qC-uw=='
 
 @app.route('/')
 def home():
@@ -14,7 +19,7 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
+#Este metodo permite obtener personas
 @app.route('/personas')
 def personas():
     headers = {'apikey': API_KEY}
@@ -22,6 +27,7 @@ def personas():
     print(response)
     return render_template('personas.html', personas=response.json())
 
+#Este metodo permite eliminar una persona
 @app.route('/personas/delete/<idpersona>')
 def delete_personas(idpersona):
     headers = {'apikey': API_KEY}
@@ -29,6 +35,7 @@ def delete_personas(idpersona):
     print(response)
     return redirect(url_for('personas'))
 
+#Este metodo permite agregar una persona al api
 @app.route('/personas', methods=['POST'])
 def add():
     print("llego por aqui a guardar")
@@ -45,30 +52,30 @@ def add():
 
     return redirect(url_for('personas'))
 
-@app.route('/huespedes')
-def huespedes():
-    responseHabitaciones = requests.get('https://utpl-interoperabilidad-ejercicio1.onrender.com/v1_0/huesped')
-    return render_template('huespedes.html', huespedesl=responseHabitaciones.json())
+#Este metodo permite cargar los clientes desde el api
+@app.route('/clientes')
+def clientes():
+    headers = {'apikey': API_KEY}
+    response = requests.get('https://utplwso2.tk/ApiCliente/2.0/cliente', headers=headers)
+    print(response.json())
+    return render_template('clientes.html', clientes=response.json())
 
-@app.route('/huespedes', methods=['POST'])
-def addHuesped():
-    print("llego por aqui a guardar huespedes")
-
-    nombreValue = request.form.get('nombre')
+#Este metodo permite agregar una cliente al api
+@app.route('/clientes', methods=['POST'])
+def addCliente():
+    print("llego por aqui a guardar un cliente")
     ciudad = request.form.get('ciudad')
-    edad = int(request.form.get('edad'))
-    hab = int(request.form.get('hab'))
+    cantidad = int(request.form.get('cantidad')) 
+    nombre = request.form.get('nombre')
+    cedula = request.form.get('cedula')
+    
+    cliente_data = { "ciudad": ciudad, "cantPro": cantidad, "nombre": nombre, "cedula": cedula}
+    
+    headers = {'apikey': API_KEY}
+    responseCliente = requests.post('https://utplwso2.tk/ApiCliente/2.0/cliente', json=cliente_data, headers=headers)
 
-    room_data = {
-        "nombre": nombreValue,
-        "ciudad": ciudad,
-        "edad": edad,
-        "hab": hab
-    }
+    return redirect(url_for('clientes'))
 
-    responseHabitacionesS = requests.post('https://utpl-interoperabilidad-ejercicio1.onrender.com/v1_0/huesped', json=room_data)
-
-    return redirect(url_for('huespedes'))
 
 if __name__ == '__main__':
     app.run(debug=True)
