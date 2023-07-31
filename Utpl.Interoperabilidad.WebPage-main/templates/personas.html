@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h4 class="my-4">Listado de personas</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Edad</th>
+        <th scope="col">Identificación</th>
+        <th scope="col">Ciudad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for persona in personas %}
+        <tr>
+          <td><a href="/personas/delete/{{ persona.id }}">{{ persona.id }}</a></td>
+          <td>{{ persona.nombre }}</td>
+          <td>{{ persona.edad }}</td>
+          <td>{{ persona.identificacion }}</td>
+          <td>{{ persona.ciudad }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4 class="my-4">Agregar una nueva persona</h4>
+  <form action="/personas" method="post">
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="ciudad" class="form-label">Ciudad</label>
+      <input type="text" class="form-control" id="ciudad" name="ciudad" required>
+    </div>
+    <div class="mb-3">
+      <label for="identificacion" class="form-label">Identificación</label>
+      <input type="text" class="form-control" id="identificacion" name="identificacion" required>
+    </div>
+    <div class="mb-3">
+      <label for="edad" class="form-label">Edad</label>
+      <input type="number" class="form-control" id="edad" name="edad" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Agregar</button>
+  </form>
+{% endblock %}
